@@ -1,0 +1,78 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      # лучше монтировать папку, а не файл напрямую
+      - ./caddy:/etc/caddy
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - nuxt
+      - app
+
+  nuxt:
+    build: ./frontend
+    container_name: nuxt
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=3000
+    expose:
+      - "3000"
+
+  app:
+    build: ./backend
+    container_name: go-app
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable
+      - SESSION_SECRET=${SESSION_SECRET}
+      - PUBLIC_URL=${PUBLIC_URL}
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:18
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    
+  redis:
+    image: redis:8.4-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"          # можно оставить только для dev
+    volumes:
+      - ./data/redis:/data  # persistance (RDB/AOF)
+    command: >
+      redis-server
+      --appendonly yes
+      --save 60 1000 
+
+volumes:
+  caddy_data:
+  caddy_config:

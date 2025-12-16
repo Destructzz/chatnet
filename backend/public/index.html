@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatNet - Социальная сеть для общения</title>
+    <link rel="stylesheet" href="/shity/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-comments"></i>
+                <h1>ChatNet</h1>
+            </div>
+            <div class="user-info" id="userInfo">
+                <!-- Оборачиваем кнопку в ссылку для перехода -->
+                <a href="/auth/google" style="text-decoration: none;">
+                    <button class="btn btn-google btn-lg"
+                        style="width: 280px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" style="width:24px; height:24px;"
+                            alt="Google Logo">
+                        <span>
+                            Войти через Google
+                        </span>
+                    </button>
+                </a>
+            </div>
+
+        </header>
+
+        <div class="main-content">
+            <!-- Боковая панель -->
+            <aside class="sidebar" id="sidebar">
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <div class="avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <h3 id="userName"></h3>
+                        <p id="userEmail"></p>
+                    </div>
+                </div>
+
+                <nav class="nav-menu">
+                    <ul>
+                        <li class="active" data-tab="general-chat">
+                            <i class="fas fa-globe"></i>
+                            <span>Общий чат</span>
+                        </li>
+                        <li data-tab="private-chat">
+                            <i class="fas fa-user-friends"></i>
+                            <span>Личные сообщения</span>
+                        </li>
+                        <li data-tab="groups">
+                            <i class="fas fa-users"></i>
+                            <span>Группы</span>
+                        </li>
+                        <li data-tab="users">
+                            <i class="fas fa-address-book"></i>
+                            <span>Пользователи</span>
+                        </li>
+                        <li data-tab="profile" id="profileTab" style="display: none;">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Мой профиль</span>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="online-users">
+                    <h3><i class="fas fa-user-check"></i> Онлайн (3)</h3>
+                    <ul id="onlineUsers">
+                        <li>Алексей <span class="status online"></span></li>
+                        <li>Мария <span class="status online"></span></li>
+                        <li>Иван <span class="status online"></span></li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Основной контент -->
+            <main class="chat-area">
+                <!-- Общий чат -->
+                <div class="tab-content active" id="general-chat">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-globe"></i> Общий чат</h2>
+                        <p>Общайтесь со всеми пользователями сети</p>
+                    </div>
+                    
+                    <div class="messages-container" id="generalMessages">
+                        <!-- Сообщения будут загружаться здесь -->
+                        <div class="message system">
+                            <p>Добро пожаловать в общий чат! Начните общение первым.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="message-input">
+                        <input type="text" id="generalMessageInput" placeholder="Введите сообщение..." disabled>
+                        <button id="sendGeneralMessage" disabled>
+                            <i class="fas fa-paper-plane"></i> Отправить
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Личные сообщения -->
+                <div class="tab-content" id="private-chat">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-user-friends"></i> Личные сообщения</h2>
+                        <p>Выберите пользователя для общения</p>
+                    </div>
+                    <div class="private-chat-container">
+                        <div class="users-list" id="privateUsersList">
+                            <!-- Список пользователей для личной переписки -->
+                        </div>
+                        <div class="private-chat">
+                            <div class="messages-container" id="privateMessages">
+                                <div class="message system">
+                                    <p>Выберите пользователя для начала переписки</p>
+                                </div>
+                            </div>
+                            <div class="message-input">
+                                <input type="text" id="privateMessageInput" placeholder="Введите сообщение..." disabled>
+                                <button id="sendPrivateMessage" disabled>
+                                    <i class="fas fa-paper-plane"></i> Отправить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Группы -->
+                <div class="tab-content" id="groups">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-users"></i> Группы</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-create-group" id="createGroupBtn">
+                                <i class="fas fa-plus"></i> Создать группу
+                            </button>
+                        </div>
+                    </div>
+                    <div class="groups-container">
+                        <div class="groups-list" id="groupsList">
+                            <!-- Список групп будет здесь -->
+                        </div>
+                        <div class="group-chat">
+                            <div class="messages-container" id="groupMessages">
+                                <div class="message system">
+                                    <p>Выберите или создайте группу для общения</p>
+                                </div>
+                            </div>
+                            <div class="message-input">
+                                <input type="text" id="groupMessageInput" placeholder="Введите сообщение..." disabled>
+                                <button id="sendGroupMessage" disabled>
+                                    <i class="fas fa-paper-plane"></i> Отправить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Пользователи -->
+                <div class="tab-content" id="users">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-address-book"></i> Все пользователи</h2>
+                    </div>
+                    <div class="users-grid" id="allUsersList">
+                        <!-- Все пользователи будут здесь -->
+                    </div>
+                </div>
+
+                <!-- Профиль -->
+                <div class="tab-content" id="profile">
+                    <div class="chat-header">
+                        <h2><i class="fas fa-user-cog"></i> Мой профиль</h2>
+                    </div>
+                    <div class="profile-container" id="profileContainer">
+                        <!-- Профиль пользователя будет здесь -->
+        <div class="profile-loading" id="profileLoading">
+            <p>Загрузка профиля...</p>
+        </div>
+        
+        <div class="profile-content" id="profileContent" style="display: none;">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img src="" alt="Аватар" id="profileAvatar" class="avatar-img">
+                    <div class="avatar-upload" id="avatarUpload" style="display: none;">
+                        <input type="file" id="avatarInput" accept="image/*">
+                        <button class="btn btn-small" id="uploadAvatarBtn">Загрузить</button>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <h3 id="profileUserName">Имя пользователя</h3>
+                    <p id="profileUserEmail">email@example.com</p>
+                    <p class="profile-status">
+                        <span class="status online" id="profileStatusIcon"></span>
+                        <span id="profileStatusText">Онлайн</span>
+                    </p>
+                    <p class="profile-meta">
+                        <i class="fas fa-calendar-alt"></i>
+                        Зарегистрирован: <span id="profileCreatedAt">01.01.2023</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="profile-details">
+                <div class="profile-section">
+                    <h4><i class="fas fa-user"></i> Основная информация</h4>
+                    <div class="form-group" id="nameEditGroup" style="display: none;">
+                        <label for="editName">Имя:</label>
+                        <input type="text" id="editName" class="form-control">
+                    </div>
+                    <p id="profileNameDisplay">Имя: <span id="profileName">Не указано</span></p>
+                    
+                    <div class="form-group" id="usernameEditGroup" style="display: none;">
+                        <label for="editUsername">Имя пользователя:</label>
+                        <input type="text" id="editUsername" class="form-control">
+                    </div>
+                    <p id="profileUsernameDisplay">Имя пользователя: <span id="profileUsername">username</span></p>
+                </div>
+                
+                <div class="profile-section">
+                    <h4><i class="fas fa-shield-alt"></i> Безопасность</h4>
+                    <div class="form-group" id="passwordEditGroup" style="display: none;">
+                        <label for="editPassword">Новый пароль:</label>
+                        <input type="password" id="editPassword" class="form-control" placeholder="Оставьте пустым, если не хотите менять">
+                        <label for="editConfirmPassword">Подтвердите пароль:</label>
+                        <input type="password" id="editConfirmPassword" class="form-control">
+                    </div>
+                    <p>Пароль: ********</p>
+                    <button class="btn btn-small" id="changePasswordBtn">Сменить пароль</button>
+                </div>
+                
+                <div class="profile-section">
+                    <h4><i class="fas fa-chart-bar"></i> Статистика</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <i class="fas fa-comment"></i>
+                            <span class="stat-value" id="statMessages">0</span>
+                            <span class="stat-label">Сообщений</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-users"></i>
+                            <span class="stat-value" id="statFriends">0</span>
+                            <span class="stat-label">Друзей</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span class="stat-value" id="statOnlineHours">0</span>
+                            <span class="stat-label">Часов онлайн</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-calendar"></i>
+                            <span class="stat-value" id="statDays">1</span>
+                            <span class="stat-label">Дней в сети</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="profile-actions" id="profileActions">
+                    <button class="btn btn-primary" id="saveProfileBtn" style="display: none;">
+                        <i class="fas fa-save"></i> Сохранить изменения
+                    </button>
+                    <button class="btn btn-secondary" id="cancelEditBtn" style="display: none;">
+                        <i class="fas fa-times"></i> Отмена
+                    </button>
+                    <button class="btn btn-danger" id="logoutProfileBtn">
+                        <i class="fas fa-sign-out-alt"></i> Выйти из аккаунта
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            </main>
+        </div>
+    <!-- Подключаем Socket.io клиент -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script src="/shity/js/app.js"></script>
+</body>
+</html>
