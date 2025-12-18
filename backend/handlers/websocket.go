@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"chatnet/wsserver"
-
 	"github.com/gin-gonic/gin"
 )
 

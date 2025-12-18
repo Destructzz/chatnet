@@ -1,10 +1,9 @@
 package router
 
-import (
-	"chatnet/handlers"   // Импорт хендлеров
+import ( // Импорт хендлеров
+	"chatnet/handlers"
 	"chatnet/middleware" // Импорт мидлваров
 	"chatnet/wsserver"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +20,11 @@ func InitRouter(hub *wsserver.Hub) *gin.Engine {
 		authGroup.GET("/me", middleware.AuthMiddleware(), handlers.AuthMe)
 	}
 
-	// 4. Группа защищенных роутов
+	public := r.Group("/api")
+	{
+		public.GET("/redis-test", handlers.RedisTest)
+	}
+	
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
 	{

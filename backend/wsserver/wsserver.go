@@ -4,9 +4,10 @@ import (
 	"chatnet/cache/redis"
 	"context"
 	"encoding/json"
-	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+	"time"
+	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{
@@ -77,7 +78,9 @@ func (h *Hub) saveToRedis(msg []byte) {
 		return
 	}
 	// Сохраняем сообщение в Redis list
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
 	h.redis.Rdb.LPush(ctx, "chat:messages", string(msg))
 }
 
