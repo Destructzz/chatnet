@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 	"time"
-
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/google"
 )
